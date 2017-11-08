@@ -1,37 +1,13 @@
 (function() {
     'use strict';
 
-    var mainContent = document.querySelector('main');
+    var mainContent = document.querySelector('.privacy-body');
     var strings = document.getElementById('strings');
     var tabpanelCloseText = dataAttributeHandler({ elem: strings, property: 'data-tabpanel-close-text' });
     var tabpanelOpenText = dataAttributeHandler({ elem: strings, property: 'data-tabpanel-open-text' });
-    var topicHeaders = document.querySelectorAll('main > section');
+    var topicHeaders = document.querySelectorAll('.privacy-body .content-girdle > section');
     var topics = [];
 
-    /**
-     * Adds the data choices widget(Firefox only) to the first sub-section under
-     * "Firefox by default shares data to".
-     * @param {Object} section - The section to which the widget
-     * will be added
-     */
-    function addDataChoicesWidget(section) {
-        var container = document.createElement('div');
-        var copyContainer = document.createElement('p');
-        var button = document.createElement('button');
-
-        container.setAttribute('class', 'data-choices');
-
-        copyContainer.textContent = strings.dataset.choicesCopy;
-
-        button.textContent = strings.dataset.choicesButton;
-        button.setAttribute('id', 'choose');
-        button.setAttribute('type', 'button');
-
-        container.appendChild(copyContainer);
-        container.appendChild(button);
-
-        section.appendChild(container);
-    }
 
     /**
      * For each main section, this innjects a button to either,
@@ -51,7 +27,7 @@
         });
 
         for (var i = 0, l = topicHeaders.length; i < l; i++) {
-            var currentHeading = topicHeaders[i].querySelector('header');
+            var currentHeading = topicHeaders[i].querySelector('h2');
 
             dataAttributeHandler({
                 elem: toggle,
@@ -192,14 +168,6 @@
         initialTopicContent.setAttribute('aria-hidden', false);
 
         initialTopicHeading.classList.remove('collapsed');
-
-        // Ensure this is Fx,
-        if (Mozilla.Client.isFirefoxDesktop) {
-            // and that the UITour works
-            Mozilla.UITour.ping(function() {
-                addDataChoicesWidget(initialTopicContent);
-            });
-        }
     }
 
     /**
@@ -278,16 +246,6 @@
             // handle clicks on the master toggle buttons
             if (event.target.classList.contains('toggle')) {
                 toggleMainSectionTopics(event.target);
-            }
-
-            // handle clicks on the data choices "Choose" button
-            if (event.target.id === 'choose') {
-                // if the uitour did not load, just return
-                if (Mozilla.UITour === undefined) {
-                    return;
-                }
-
-                Mozilla.UITour.openPreferences('privacy-reports');
             }
         });
     }
