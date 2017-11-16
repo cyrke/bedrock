@@ -32,6 +32,63 @@
 
 {% block site_header %}
 {% include 'mozorg/home/includes/home-icons-sprite.svg' %}
+  <aside class="promo" id="fundraiser">
+    <h1>
+      {{ _('We all love the web. Join Mozilla in defending it.') }}
+    </h1>
+
+    <p>
+      {#
+        L10n: The third sentence below ("If everyone reading...") can either be
+        localized with a value/time frame appropriate for the given locale, or
+        can be dropped altogether.
+      #}
+      {% trans %}
+        Let’s protect the world’s largest public resource for future
+        generations. Just a few times a year, Mozilla asks for donations. If
+        everyone reading this chipped in $3, we could wrap this fundraiser in
+        under an hour. Together we can keep the web healthy, wonderful and
+        welcoming to all.
+      {% endtrans %}
+    </p>
+
+    <form id="fundraiser-form" method="get" action="https://donate.mozilla.org/{{ LANG }}/">
+      <fieldset class="donate-options">
+        {% for amount in donate_params.preset_list %}
+          <label for="donate{{ amount }}" {% if amount == donate_params.default %}class="selected"{% endif %}>
+            <input type="radio" value="{{ amount }}" id="donate{{ amount }}" name="amount"
+            {% if amount == donate_params.default %}checked="checked"{% endif %} />
+            {# L10n: Inserts a sum in US dollars, e.g. '$100'. Adapt the string in your translation for your locale conventions if needed, ex: %(sum)s US$ #}
+            {{ _('$%(sum)s')|format(sum=amount) }}
+          </label>
+        {% endfor %}
+
+        <label for="donate-custom" class="own-amount">{{ _('Enter your own amount') }}</label>
+        <input type="text" name="amount" id="donate-custom" />
+      </fieldset>
+      <fieldset class="recurring">
+        <label for="monthly">
+          <input type="radio" value="monthly" id="monthly" name="frequency"> {{ _('Monthly') }}
+        </label>
+
+        <label for="onetime">
+          <input type="radio" value="single" id="onetime" name="frequency" checked> {{ _('One-time') }}
+        </label>
+
+        <input type="hidden" name="currency" value="{{ donate_params.currency }}" />
+        <input type="hidden" name="presets" value="{{ donate_params.presets }}" />
+
+        {# GA params #}
+        <input type="hidden" name="ref" value="EOYFR2015" />
+        <input type="hidden" name="utm_campaign" value="EOYFR2015" />
+        <input type="hidden" name="utm_source" value="mozilla.org" />
+        <input type="hidden" name="utm_medium" value="referral" />
+        <input type="hidden" name="utm_content" value="takeover" />
+
+        <input type="submit" value="{{ _('Donate Now') }}" />
+      </fieldset>
+    </form>
+  </aside>
   {% if LANG.startswith('en-') %}
     {% include 'includes/global-nav.html' %}
   {% else %}
@@ -48,16 +105,17 @@
     <div class="content-wrapper">
       <div class="intro-content">
         <strong id="fx-logo">
-        {% if LANG.startswith('en') %}
-          The new <span>Firefox</span>
+        {% if l10n_has_tag('home-update-20171116') %}
+          {# L10n: the <span> below is for visual formatting only - bolding the word 'Firefox' #}
+          {{ _('The new <span>Firefox</span>') }}
         {% else %}
           {{ _('Firefox') }}
         {% endif %}
         </strong>
 
         <h2>
-        {% if LANG.startswith('en-') %}
-          Browse Faster.<br>For good.
+        {% if l10n_has_tag('home-update-20171116') %}
+          {{ _('2x the speed. Puts your privacy first.') }}
         {% else %}
           {{ _('Browse faster. For good.') }}
         {% endif %}
@@ -83,11 +141,19 @@
           <span>{{ _('We make the internet safer, healthier and faster for good.') }}</span>
         </h2>
         <p>
-        {% trans %}
-          Mozilla is the not-for-profit behind Firefox, the original alternative
-          browser. We create products and policy to keep the internet in service
-          of people, not profits.
-        {% endtrans %}
+        {% if l10n_has_tag('home-update-20171116') %}
+          {% trans %}
+            Mozilla is the not-for-profit behind Firefox, the original alternative
+            browser. We create products and policy to keep the internet in service
+            of people, not profit.
+          {% endtrans %}
+        {% else %}
+          {% trans %}
+            Mozilla is the not-for-profit behind Firefox, the original alternative
+            browser. We create products and policy to keep the internet in service
+            of people, not profits.
+          {% endtrans %}
+        {% endif %}
         </p>
       </div>
     </div>{#--/.content--#}
